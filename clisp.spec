@@ -1,5 +1,5 @@
 %define	name	clisp
-%define	version	2.41
+%define	version	2.41a
 %define	release	%mkrel 1
 
 Summary:	Common Lisp (ANSI CL) implementation
@@ -10,7 +10,7 @@ Icon:		clisp.gif
 License:	GPL
 Epoch:		1
 Group:		Development/Other
-Source0:	%{name}-%{version}.tar.bz2
+Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
 Patch0:		clisp-2.41-postgresql.patch
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
@@ -51,7 +51,7 @@ Requires:	%{name} = %{version}-%{release}
 Files necessary for linking CLISP.
 
 %prep
-%setup -q
+%setup -q -n %{name}-2.41
 %patch0 -p1 -b .postgresql
 
 %build
