@@ -6,7 +6,6 @@ Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
 Version:	%{version}
 Release:	%{release}
-Icon:		clisp.gif
 License:	GPL
 Epoch:		1
 Group:		Development/Other
