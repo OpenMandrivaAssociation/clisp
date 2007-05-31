@@ -16,7 +16,7 @@ Provides:	ansi-cl
 BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
 BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
-BuildRequires:	imake
+BuildRequires:	imake termcap-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -100,7 +100,6 @@ rm -rf %{buildroot}
 %{_libdir}/clisp/full/lisp.run
 %{_libdir}/clisp/data
 %{_datadir}/emacs/site-lisp/*
-
 
 %files devel
 %defattr(-,root,root,-)
