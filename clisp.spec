@@ -17,7 +17,6 @@ BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-dev
 BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Common Lisp is a high-level, all-purpose programming language.
