@@ -1,6 +1,6 @@
 %define	name	clisp
 %define	version	2.41a
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
