@@ -14,7 +14,7 @@ Patch0:		clisp-2.41-postgresql.patch
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
 BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
-BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
+BuildRequires:	db4.2-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
 
