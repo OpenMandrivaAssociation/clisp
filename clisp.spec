@@ -1,22 +1,20 @@
-%define	name	clisp
-%define	version	2.41a
-%define	release	%mkrel 2
-
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	%{version}
-Release:	%{release}
+Version:	2.43
+Release:	%mkrel 1
 License:	GPL
 Epoch:		1
 Group:		Development/Other
 Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
-Patch0:		clisp-2.41-postgresql.patch
+Patch0:		clisp-postgresql.diff
+Patch1:		clisp-TOPDIR.diff
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
 BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
-BuildRequires:	db4.2-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
+BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
+Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Common Lisp is a high-level, all-purpose programming language.
@@ -49,35 +47,41 @@ Requires:	%{name} = %{version}-%{release}
 Files necessary for linking CLISP.
 
 %prep
-%setup -q -n %{name}-2.41
+
+%setup -q -n %{name}-%{version}
 %patch0 -p1 -b .postgresql
+%patch1 -p0 -b .TOPDIR
 
 %build
-CFLAGS="" \
-./configure	--prefix=%{_prefix} \
-		--libdir=%{_libdir} \
-		--fsstnd=redhat \
-		--with-dynamic-ffi \
-		--with-module=berkeley-db \
-		--with-module=clx/new-clx \
-		--with-module=pcre \
-		--with-module=postgresql \
-		--with-module=rawsock \
-		--with-module=wildcard \
-		--with-module=zlib \
-		--with-module=bindings/glibc \
-		--with-readline \
-		--build build
+CFLAGS="" TOPDIR="%{name}" \
+./configure \
+    --prefix=%{_prefix} \
+    --libdir=%{_libdir} \
+    --fsstnd=redhat \
+    --with-dynamic-ffi \
+    --with-module=berkeley-db \
+    --with-module=clx/new-clx \
+    --with-module=pcre \
+    --with-module=postgresql \
+    --with-module=rawsock \
+    --with-module=wildcard \
+    --with-module=zlib \
+    --with-module=bindings/glibc \
+    --with-readline \
+    --build build
 
 %check
 cd build
-make check
+make TOPDIR="%{name}" check
 
 %install
 rm -rf %{buildroot}
-%makeinstall_std -C build docdir=%{_docdir}/clisp-%{version}
-rm -f $RPM_BUILD_ROOT%{_docdir}/clisp-%{version}/doc/clisp.{dvi,1,ps}
-cp -p doc/mop-spec.pdf $RPM_BUILD_ROOT%{_docdir}/clisp-%{version}/doc
+
+%makeinstall_std -C build TOPDIR="%{name}" docdir=%{_docdir}/clisp 
+
+rm -f %{buildroot}%{_docdir}/clisp/doc/clisp.{dvi,1,ps}
+cp -p doc/mop-spec.pdf %{buildroot}%{_docdir}/clisp/doc
+
 %find_lang %{name}
 %find_lang %{name}low
 cat %{name}low.lang >> %{name}.lang
@@ -89,7 +93,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_bindir}/clisp
 %{_mandir}/*/*
-%{_docdir}/clisp-%{version}
+%{_docdir}/clisp
 %dir %{_libdir}/clisp/base
 %dir %{_libdir}/clisp/full
 %dir %{_libdir}/clisp
@@ -99,6 +103,7 @@ rm -rf %{buildroot}
 %{_libdir}/clisp/full/lisp.run
 %{_libdir}/clisp/data
 %{_datadir}/emacs/site-lisp/*
+%{_datadir}/vim/vimfiles/after/syntax/lisp.vim
 
 %files devel
 %defattr(-,root,root,-)
