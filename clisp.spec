@@ -1,7 +1,7 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
 Version:	2.43
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL
 Epoch:		1
 Group:		Development/Other
@@ -41,7 +41,7 @@ An X11 interface is available through CLX and Garnet.
 %package	devel
 Summary:	Development files for CLISP
 Group:		Development/Other
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description	devel
 Files necessary for linking CLISP.
