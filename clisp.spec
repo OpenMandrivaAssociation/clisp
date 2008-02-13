@@ -1,8 +1,8 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.43
-Release:	%mkrel 2
-License:	GPL
+Version:	2.44
+Release:	%mkrel 1
+License:	GPLv2
 Epoch:		1
 Group:		Development/Other
 Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
@@ -14,6 +14,7 @@ BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-dev
 BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
+BuildRequires:	libffcall-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
