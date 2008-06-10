@@ -15,7 +15,7 @@ BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-d
 BuildRequires:	imake termcap-devel
 BuildRequires:	libffcall-devel
 BuildRequires:	gtk2-devel
-BuildRequires:	libglade-devel
+BuildRequires:	libglade2-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
