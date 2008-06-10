@@ -1,13 +1,12 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.44.1
+Version:	2.45
 Release:	%mkrel 1
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
 Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
-Patch0:		clisp-postgresql.diff
-Patch1:		clisp-TOPDIR.diff
+Patch0:		clisp-2.45-pgsql.patch
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
 BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
@@ -15,6 +14,7 @@ BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
 BuildRequires:	libffcall-devel
+BuildRequires:	gtk2-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -51,11 +51,10 @@ Files necessary for linking CLISP.
 
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .postgresql
-%patch1 -p0 -b .TOPDIR
 
 %build
-CFLAGS="" TOPDIR="%{name}" \
-./configure \
+ulimit -s 16384
+CFLAGS="" ./configure \
     --prefix=%{_prefix} \
     --libdir=%{_libdir} \
     --fsstnd=redhat \
@@ -68,17 +67,18 @@ CFLAGS="" TOPDIR="%{name}" \
     --with-module=wildcard \
     --with-module=zlib \
     --with-module=bindings/glibc \
+    --with-module=gtk2 \
     --with-readline \
-    --build build
+    build
+
+make -C build
 
 %check
-cd build
-make TOPDIR="%{name}" check
+make -C build check
 
 %install
 rm -rf %{buildroot}
-
-%makeinstall_std -C build TOPDIR="%{name}" docdir=%{_docdir}/clisp 
+%makeinstall_std  -C build docdir=%{_docdir}/clisp
 
 rm -f %{buildroot}%{_docdir}/clisp/doc/clisp.{dvi,1,ps}
 cp -p doc/mop-spec.pdf %{buildroot}%{_docdir}/clisp/doc
@@ -95,28 +95,28 @@ rm -rf %{buildroot}
 %{_bindir}/clisp
 %{_mandir}/*/*
 %{_docdir}/clisp
-%dir %{_libdir}/clisp/base
-%dir %{_libdir}/clisp/full
-%dir %{_libdir}/clisp
-%{_libdir}/clisp/base/lispinit.mem
-%{_libdir}/clisp/base/lisp.run
-%{_libdir}/clisp/full/lispinit.mem
-%{_libdir}/clisp/full/lisp.run
-%{_libdir}/clisp/data
+%dir %{_libdir}/%{name}-%{version}/base
+%dir %{_libdir}/%{name}-%{version}/full
+%dir %{_libdir}/%{name}-%{version}
+%{_libdir}/%{name}-%{version}/base/lispinit.mem
+%{_libdir}/%{name}-%{version}/base/lisp.run
+%{_libdir}/%{name}-%{version}/full/lispinit.mem
+%{_libdir}/%{name}-%{version}/full/lisp.run
+%{_libdir}/%{name}-%{version}/data
 %{_datadir}/emacs/site-lisp/*
 %{_datadir}/vim/vimfiles/after/syntax/lisp.vim
 
 %files devel
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_libdir}/clisp/clisp-link
-%{_libdir}/clisp/base/*.a
-%{_libdir}/clisp/base/*.o
-%{_libdir}/clisp/base/*.h
-%{_libdir}/clisp/base/*.dvi
-%{_libdir}/clisp/base/makevars
-%{_libdir}/clisp/full/*.a
-%{_libdir}/clisp/full/*.o
-%{_libdir}/clisp/full/*.h
-%{_libdir}/clisp/full/*.dvi
-%{_libdir}/clisp/full/makevars
-%{_libdir}/clisp/linkkit
+%attr(0755,root,root) %{_libdir}/%{name}-%{version}/clisp-link
+%{_libdir}/%{name}-%{version}/base/*.a
+%{_libdir}/%{name}-%{version}/base/*.o
+%{_libdir}/%{name}-%{version}/base/*.h
+%{_libdir}/%{name}-%{version}/base/*.dvi
+%{_libdir}/%{name}-%{version}/base/makevars
+%{_libdir}/%{name}-%{version}/full/*.a
+%{_libdir}/%{name}-%{version}/full/*.o
+%{_libdir}/%{name}-%{version}/full/*.h
+%{_libdir}/%{name}-%{version}/full/*.dvi
+%{_libdir}/%{name}-%{version}/full/makevars
+%{_libdir}/%{name}-%{version}/linkkit
