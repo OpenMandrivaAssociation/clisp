@@ -1,7 +1,7 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.45
-Release:	%mkrel 2
+Version:	2.46
+Release:	%mkrel 1
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
