@@ -1,16 +1,15 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.46
+Version:	2.47
 Release:	%mkrel 1
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
 Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
-Patch0:		clisp-2.45-pgsql.patch
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
 BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
-BuildRequires:	db4-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
+BuildRequires:	db4.6-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
 BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
 BuildRequires:	imake termcap-devel
 BuildRequires:	libffcall-devel
@@ -51,7 +50,6 @@ Files necessary for linking CLISP.
 %prep
 
 %setup -q -n %{name}-%{version}
-%patch0 -p1 -b .postgresql
 
 %build
 ulimit -s 16384
