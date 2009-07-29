@@ -1,20 +1,38 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.47
-Release:	%mkrel 2
+Version:	2.48
+Release:	%mkrel 1
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
 Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
 URL:		http://clisp.cons.org/
 Provides:	ansi-cl
-BuildRequires:	readline-devel gettext pcre-devel postgresql-devel libsigsegv-devel
-BuildRequires:	db4.6-devel zlib-devel libice-devel libsm-devel libx11-devel libxaw-devel
-BuildRequires:  libxext-devel libxft-devel libxmu-devel libxrender-devel libxt-devel
-BuildRequires:	imake termcap-devel
-BuildRequires:	libffcall-devel
-BuildRequires:	gtk2-devel
-BuildRequires:	libglade2-devel
+BuildRequires:	imake
+BuildRequires:	libsigsegv-devel
+BuildRequires:	readline-devel
+BuildRequires:  dbus-devel
+BuildRequires:  diffutils
+BuildRequires:  libfcgi-devel
+BuildRequires:  ffcall-devel
+BuildRequires:  gdbm-devel
+BuildRequires:  gettext
+BuildRequires:  gtk2-devel
+BuildRequires:  libice-devel
+BuildRequires:  libsm-devel
+BuildRequires:  libx11-devel
+BuildRequires:  libxaw-devel
+BuildRequires:  libxext-devel
+BuildRequires:  libxft-devel
+BuildRequires:  libxmu-devel
+BuildRequires:  libxrender-devel
+BuildRequires:  libxt-devel
+BuildRequires:  libglade2-devel
+BuildRequires:  pcre-devel
+BuildRequires:  postgresql-devel
+BuildRequires:  zlib-devel
+BuildRequires:  db4-devel
+BuildRequires:  libpari-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -53,22 +71,30 @@ Files necessary for linking CLISP.
 
 %build
 ulimit -s 16384
-CFLAGS="" ./configure \
-    --prefix=%{_prefix} \
-    --libdir=%{_libdir} \
-    --fsstnd=redhat \
-    --with-dynamic-ffi \
-    --with-module=berkeley-db \
-    --with-module=clx/new-clx \
-    --with-module=pcre \
-    --with-module=postgresql \
-    --with-module=rawsock \
-    --with-module=wildcard \
-    --with-module=zlib \
-    --with-module=bindings/glibc \
-    --with-module=gtk2 \
-    --with-readline \
-    build
+./configure --prefix=%{_prefix} \
+            --libdir=%{_libdir} \
+            --mandir=%{_mandir} \
+            --docdir=%{_docdir}/clisp \
+            --fsstnd=redhat \
+            --hyperspec=http://www.lispworks.com/documentation/HyperSpec/ \
+            --with-module=bindings/glibc \
+            --with-module=clx/new-clx \
+            --with-module=dbus \
+            --with-module=fastcgi \
+            --with-module=gdbm \
+            --with-module=gtk2 \
+            --with-module=i18n \
+            --with-module=pcre \
+            --with-module=postgresql \
+            --with-module=rawsock \
+            --with-module=regexp \
+            --with-module=syscalls \
+            --with-module=wildcard \
+            --with-module=zlib \
+            --with-readline \
+            --cbc \
+            build CFLAGS="%optflags"
+
 
 make -C build
 
@@ -77,7 +103,7 @@ make -C build check
 
 %install
 rm -rf %{buildroot}
-%makeinstall_std  -C build docdir=%{_docdir}/clisp
+%makeinstall_std  -C build
 
 rm -f %{buildroot}%{_docdir}/clisp/doc/clisp.{dvi,1,ps}
 cp -p doc/mop-spec.pdf %{buildroot}%{_docdir}/clisp/doc
@@ -119,3 +145,4 @@ rm -rf %{buildroot}
 %{_libdir}/%{name}-%{version}/full/*.dvi
 %{_libdir}/%{name}-%{version}/full/makevars
 %{_libdir}/%{name}-%{version}/linkkit
+%{_datadir}/aclocal/clisp.m4
