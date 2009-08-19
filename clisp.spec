@@ -1,7 +1,7 @@
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
 Version:	2.48
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
@@ -34,6 +34,11 @@ BuildRequires:  zlib-devel
 BuildRequires:  db4-devel
 BuildRequires:  libpari-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+
+# experimental patch by "Sam Steingold" <sds@gnu.org>
+# to correct an issue with sagemath pexpect interface
+# http://sourceforge.net/mailarchive/forum.php?thread_name=200908191000.56607.bruno%40clisp.org&forum_name=clisp-devel
+Patch0:	clisp-noreadline.patch
 
 %description
 Common Lisp is a high-level, all-purpose programming language.
@@ -68,6 +73,8 @@ Files necessary for linking CLISP.
 %prep
 
 %setup -q -n %{name}-%{version}
+
+%patch0 -p1
 
 %build
 ulimit -s 16384
