@@ -1,7 +1,9 @@
+%define with_lightning		0
+
 Summary:	Common Lisp (ANSI CL) implementation
 Name:		clisp
-Version:	2.48
-Release:	%mkrel 2
+Version:	2.49
+Release:	%mkrel 1
 License:	GPLv2
 Epoch:		1
 Group:		Development/Other
@@ -10,6 +12,9 @@ URL:		http://clisp.cons.org/
 Provides:	ansi-cl
 BuildRequires:	imake
 BuildRequires:	libsigsegv-devel
+%if %{with_lightning}
+BuildRequires:	lightning
+%endif
 BuildRequires:	readline-devel
 BuildRequires:  dbus-devel
 BuildRequires:  diffutils
@@ -34,11 +39,6 @@ BuildRequires:  zlib-devel
 BuildRequires:  db4-devel
 BuildRequires:  libpari-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
-# experimental patch by "Sam Steingold" <sds@gnu.org>
-# to correct an issue with sagemath pexpect interface
-# http://sourceforge.net/mailarchive/forum.php?thread_name=200908191000.56607.bruno%40clisp.org&forum_name=clisp-devel
-Patch0:	clisp-noreadline.patch
 
 %description
 Common Lisp is a high-level, all-purpose programming language.
@@ -74,8 +74,6 @@ Files necessary for linking CLISP.
 
 %setup -q -n %{name}-%{version}
 
-%patch0 -p1
-
 %build
 ulimit -s 16384
 ./configure --prefix=%{_prefix} \
@@ -99,6 +97,9 @@ ulimit -s 16384
             --with-module=wildcard \
             --with-module=zlib \
             --with-readline \
+%if %{with_lightning}
+            --with-jitc=lightning \
+%endif
             --cbc \
             build CFLAGS="%optflags"
 
@@ -127,29 +128,94 @@ rm -rf %{buildroot}
 %{_bindir}/clisp
 %{_mandir}/*/*
 %{_docdir}/clisp
-%dir %{_libdir}/%{name}-%{version}/base
-%dir %{_libdir}/%{name}-%{version}/full
 %dir %{_libdir}/%{name}-%{version}
 %{_libdir}/%{name}-%{version}/base/lispinit.mem
 %{_libdir}/%{name}-%{version}/base/lisp.run
-%{_libdir}/%{name}-%{version}/full/lispinit.mem
-%{_libdir}/%{name}-%{version}/full/lisp.run
+%{_libdir}/%{name}-%{version}/bindings/glibc/*.fas
+%{_libdir}/%{name}-%{version}/bindings/glibc/*.lisp
+%{_libdir}/%{name}-%{version}/clx/new-clx/*.fas
+%{_libdir}/%{name}-%{version}/clx/new-clx/*.lisp
 %{_libdir}/%{name}-%{version}/data
+%dir %{_libdir}/%{name}-%{version}/dbus
+%{_libdir}/%{name}-%{version}/dbus/*.fas
+%{_libdir}/%{name}-%{version}/dbus/*.lisp
+%dir %{_libdir}/%{name}-%{version}/fastcgi
+%{_libdir}/%{name}-%{version}/fastcgi/*.fas
+%{_libdir}/%{name}-%{version}/fastcgi/*.lisp
+%dir %{_libdir}/%{name}-%{version}/gdbm
+%{_libdir}/%{name}-%{version}/gdbm/*.fas
+%{_libdir}/%{name}-%{version}/gdbm/*.lisp
+%dir %{_libdir}/%{name}-%{version}/gtk2
+%{_libdir}/%{name}-%{version}/gtk2/*.fas
+%{_libdir}/%{name}-%{version}/gtk2/*.lisp
+%{_libdir}/%{name}-%{version}/dynmod
+%dir %{_libdir}/%{name}-%{version}/pcre
+%{_libdir}/%{name}-%{version}/pcre/*.fas
+%{_libdir}/%{name}-%{version}/pcre/*.lisp
+%dir %{_libdir}/%{name}-%{version}/postgresql
+%{_libdir}/%{name}-%{version}/postgresql/*.fas
+%{_libdir}/%{name}-%{version}/postgresql/*.lisp
+%dir %{_libdir}/%{name}-%{version}/rawsock
+%{_libdir}/%{name}-%{version}/rawsock/*.fas
+%{_libdir}/%{name}-%{version}/rawsock/*.lisp
+%dir %{_libdir}/%{name}-%{version}/wildcard
+%{_libdir}/%{name}-%{version}/wildcard/*.fas
+%{_libdir}/%{name}-%{version}/wildcard/*.lisp
+%dir %{_libdir}/%{name}-%{version}/zlib
+%{_libdir}/%{name}-%{version}/zlib/*.fas
+%{_libdir}/%{name}-%{version}/zlib/*.lisp
 %{_datadir}/emacs/site-lisp/*
 %{_datadir}/vim/vimfiles/after/syntax/lisp.vim
 
 %files devel
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_libdir}/%{name}-%{version}/clisp-link
+%attr(0755,root,root) %{_bindir}/clisp-link
 %{_libdir}/%{name}-%{version}/base/*.a
 %{_libdir}/%{name}-%{version}/base/*.o
 %{_libdir}/%{name}-%{version}/base/*.h
-%{_libdir}/%{name}-%{version}/base/*.dvi
 %{_libdir}/%{name}-%{version}/base/makevars
-%{_libdir}/%{name}-%{version}/full/*.a
-%{_libdir}/%{name}-%{version}/full/*.o
-%{_libdir}/%{name}-%{version}/full/*.h
-%{_libdir}/%{name}-%{version}/full/*.dvi
-%{_libdir}/%{name}-%{version}/full/makevars
+%{_libdir}/%{name}-%{version}/bindings/glibc/*.o
+%{_libdir}/%{name}-%{version}/bindings/glibc/*.sh
+%{_libdir}/%{name}-%{version}/bindings/glibc/Makefile
+%{_libdir}/%{name}-%{version}/build-aux/*
+%{_libdir}/%{name}-%{version}/clx/new-clx/*.o
+%{_libdir}/%{name}-%{version}/clx/new-clx/*.sh
+%{_libdir}/%{name}-%{version}/clx/new-clx/demos
+%{_libdir}/%{name}-%{version}/clx/new-clx/Makefile
+%{_libdir}/%{name}-%{version}/clx/new-clx/README
+%{_libdir}/%{name}-%{version}/dbus/*.o
+%{_libdir}/%{name}-%{version}/dbus/*.sh
+%{_libdir}/%{name}-%{version}/dbus/Makefile
+%{_libdir}/%{name}-%{version}/fastcgi/*.o
+%{_libdir}/%{name}-%{version}/fastcgi/*.sh
+%{_libdir}/%{name}-%{version}/fastcgi/Makefile
+%{_libdir}/%{name}-%{version}/fastcgi/README
+%{_libdir}/%{name}-%{version}/gdbm/*.o
+%{_libdir}/%{name}-%{version}/gdbm/*.sh
+%{_libdir}/%{name}-%{version}/gdbm/Makefile
+%{_libdir}/%{name}-%{version}/gtk2/*.cfg
+%{_libdir}/%{name}-%{version}/gtk2/*.glade
+%{_libdir}/%{name}-%{version}/gtk2/*.o
+%{_libdir}/%{name}-%{version}/gtk2/*.sh
+%{_libdir}/%{name}-%{version}/gtk2/Makefile
 %{_libdir}/%{name}-%{version}/linkkit
+%{_libdir}/%{name}-%{version}/pcre/*.o
+%{_libdir}/%{name}-%{version}/pcre/*.sh
+%{_libdir}/%{name}-%{version}/pcre/Makefile
+%{_libdir}/%{name}-%{version}/postgresql/*.o
+%{_libdir}/%{name}-%{version}/postgresql/*.sh
+%{_libdir}/%{name}-%{version}/postgresql/Makefile
+%{_libdir}/%{name}-%{version}/postgresql/README
+%{_libdir}/%{name}-%{version}/rawsock/*.o
+%{_libdir}/%{name}-%{version}/rawsock/*.sh
+%{_libdir}/%{name}-%{version}/rawsock/demos
+%{_libdir}/%{name}-%{version}/rawsock/Makefile
+%{_libdir}/%{name}-%{version}/wildcard/*.a
+%{_libdir}/%{name}-%{version}/wildcard/*.o
+%{_libdir}/%{name}-%{version}/wildcard/*.sh
+%{_libdir}/%{name}-%{version}/wildcard/Makefile
+%{_libdir}/%{name}-%{version}/wildcard/README
+%{_libdir}/%{name}-%{version}/zlib/*.o
+%{_libdir}/%{name}-%{version}/zlib/*.sh
+%{_libdir}/%{name}-%{version}/zlib/Makefile
 %{_datadir}/aclocal/clisp.m4
