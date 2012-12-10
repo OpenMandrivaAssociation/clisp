@@ -1,2 +1,3 @@
+---
 sources:
-  "clisp-2.49.tar.bz2:"	7e8d585ef8d0d6349ffe581d1ac08681e6e670d4
+  clisp-2.49.tar.bz2: 7e8d585ef8d0d6349ffe581d1ac08681e6e670d4
