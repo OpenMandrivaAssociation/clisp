@@ -115,6 +115,13 @@ chmod a+rx modules/clx/clx-manual/html
 chmod a+r modules/clx/clx-manual/html/*
 
 %build
+
+# Why keep reverting when switching back to ld.bfd
+# like all other distros do...
+mkdir bin
+ln -sf %{_bindir}/ld.bfd bin/ld
+export PATH=$PWD/bin:$PATH
+
 ulimit -s unlimited
 # Do not need to specify base modules: i18n, readline, regexp, syscalls.
 # The dirkey module currently can only be built on Windows/Cygwin/MinGW.
