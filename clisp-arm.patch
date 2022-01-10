@@ -1,5 +1,5 @@
---- src/ariarm.d.orig	Fri May 04 01:04:01 2012 -0400
-+++ src/ariarm.d	Thu May 24 16:48:47 2012 -0600
+--- a/src/ariarm.d
++++ b/src/ariarm.d
 @@ -86,7 +86,7 @@
  
  #define C(x) x
