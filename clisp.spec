@@ -10,18 +10,18 @@ Version:	2.49.93
 Release:	1
 Group:		Development/Other
 License:	GPLv2
-#Source0:	http://downloads.sourceforge.net/clisp/%{name}-%{version}.tar.bz2
+#Source0:	https://downloads.sourceforge.net/clisp/%{name}-%{version}.tar.bz2
 #Source0:	ftp://ftp.gnu.org/pub/gnu/clisp/latest/%{name}-%{version}.tar.bz2
 Source0:	https://gitlab.com/gnu-clisp/clisp/-/archive/%{commit}/%{name}-%{commit}.tar.bz2
 # Upstream dropped this file from the distribution
 Source1:	https://gitlab.com/sam-s/clhs/-/raw/master/clhs.el
-# http://sourceforge.net/tracker/?func=detail&aid=3529607&group_id=1355&atid=301355
+# https://sourceforge.net/tracker/?func=detail&aid=3529607&group_id=1355&atid=301355
 Patch0:		%{name}-format.patch
-# http://sourceforge.net/tracker/?func=detail&aid=3529615&group_id=1355&atid=301355
+# https://sourceforge.net/tracker/?func=detail&aid=3529615&group_id=1355&atid=301355
 #Patch1:		%{name}-arm.patch
-# http://sourceforge.net/tracker/?func=detail&aid=3572511&group_id=1355&atid=301355
+# https://sourceforge.net/tracker/?func=detail&aid=3572511&group_id=1355&atid=301355
 #Patch2:		%{name}-libsvm.patch
-# http://sourceforge.net/tracker/?func=detail&aid=3572516&group_id=1355&atid=301355
+# https://sourceforge.net/tracker/?func=detail&aid=3572516&group_id=1355&atid=301355
 Patch3:		%{name}-db.patch
 # Linux-specific fixes.  Sent upstream 25 Jul 2012.
 Patch4:		%{name}-linux.patch
@@ -58,7 +58,8 @@ BuildRequires:	libsvm-devel
 #BuildRequires:	libxrender-devel
 BuildRequires:  fcgi-devel
 BuildRequires:	locales-en
-BuildRequires:	pari-devel
+BuildRequires:	pari
+BuildRequires:	libpari-devel
 BuildRequires:	pkgconfig(libglade-2.0)
 BuildRequires:	pcre-devel
 BuildRequires:	postgresql-devel
@@ -122,8 +123,8 @@ Maxima, ACL2 and many other Common Lisp packages.
 %{_libdir}/clisp-2.49.93+/gtk2/*.fas
 %dir %{_libdir}/clisp-2.49.93+/libsvm/
 %{_libdir}/clisp-2.49.93+/libsvm/*.fas
-#%%dir %%{_libdir}/clisp-%%{version}/pari/
-#%%{_libdir}/clisp-%%{version}/pari/*.fas
+%dir %{_libdir}/clisp-2.49.93+/pari/
+%{_libdir}/clisp-2.49.93+/pari/*.fas
 %dir %{_libdir}/clisp-2.49.93+/pcre/
 %{_libdir}/clisp-2.49.93+/pcre/*.fas
 %dir %{_libdir}/clisp-2.49.93+/postgresql/
@@ -208,11 +209,12 @@ Files necessary for linking CLISP.
 %{_libdir}/clisp-2.49.93+/libsvm/*.o
 %{_libdir}/clisp-2.49.93+/libsvm/*.sh
 %{_libdir}/clisp-2.49.93+/linkkit/
-#%%{_libdir}/clisp-%%{version}/pari/README
-#%%{_libdir}/clisp-%%{version}/pari/Makefile
-#%%{_libdir}/clisp-%%{version}/pari/*.lisp
-#%%{_libdir}/clisp-%%{version}/pari/*.o
-#%%{_libdir}/clisp-%%{version}/pari/*.sh
+%{_libdir}/clisp-2.49.93+/pari/README
+%{_libdir}/clisp-2.49.93+/pari/Makefile
+%{_libdir}/clisp-2.49.93+/pari/*.h
+%{_libdir}/clisp-2.49.93+/pari/*.lisp
+%{_libdir}/clisp-2.49.93+/pari/*.o
+%{_libdir}/clisp-2.49.93+/pari/*.sh
 %{_libdir}/clisp-2.49.93+/pcre/Makefile
 %{_libdir}/clisp-2.49.93+/pcre/*.h
 %{_libdir}/clisp-2.49.93+/pcre/*.lisp
@@ -274,13 +276,8 @@ chmod a+rx modules/clx/clx-manual/html
 chmod a+r modules/clx/clx-manual/html/*
 
 %build
-# Why keep reverting when switching back to ld.bfd
-# like all other distros do...
-mkdir bin
-ln -sf %{_bindir}/ld.bfd bin/ld
-export PATH=$PWD/bin:$PATH
-
-ulimit -s unlimited
+%setup_compile_flags
+#ulimit -s unlimited
 # Do not need to specify base modules: i18n, readline, regexp, syscalls.
 # The dirkey module currently can only be built on Windows/Cygwin/MinGW.
 # The editor module is not in good enough shape to use.
@@ -304,9 +301,7 @@ ulimit -s unlimited
 	--with-module=gdbm \
 	--with-module=gtk2 \
 	--with-module=libsvm \
-%if 0
 	--with-module=pari \
-%endif
 	--with-module=pcre \
 	--with-module=postgresql \
 	--with-module=rawsock \
