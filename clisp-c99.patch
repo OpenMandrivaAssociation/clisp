@@ -1,0 +1,36 @@
+berkeley-db: Avoid failure of HAVE_DB_STAT_ACCEPT_TXN test in
+configure
+
+The last argument for db_stat is of type uint32_t, and compilers may
+not allow passing NULL in its place.  This causes the check to fail
+in some cases where HAVE_DB_STAT_ACCEPT_TXN is expected to be defined,
+leading to build failures later.
+
+Submitted upstream: <https://gitlab.com/gnu-clisp/clisp/-/merge_requests/8>
+
+diff --git modules/berkeley-db/configure modules/berkeley-db/configure
+index 6f63e605b..c8734a1ca 100755
+--- modules/berkeley-db/configure
++++ modules/berkeley-db/configure
+@@ -6347,7 +6347,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ int
+ main (void)
+ {
+-DB db; db.stat(&db,NULL,0,NULL);
++DB db; db.stat(&db,NULL,0,0);
+   ;
+   return 0;
+ }
+diff --git modules/berkeley-db/configure.in modules/berkeley-db/configure.in
+index c2b8a5d2d..225fd91b1 100644
+--- modules/berkeley-db/configure.in
++++ modules/berkeley-db/configure.in
+@@ -38,7 +38,7 @@ AC_CHECK_SIZEOF(db_recno_t,,[#include <stdio.h>
+ dnl <http://www.sleepycat.com/docs/ref/upgrade.4.3/stat.html>
+ AC_CACHE_CHECK([whether DB->stat() accepts TXNid],ac_cv_db_stat_accept_txn,[
+ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <db.h>],
+-[[DB db; db.stat(&db,NULL,0,NULL);]])],
++[[DB db; db.stat(&db,NULL,0,0);]])],
+ ac_cv_db_stat_accept_txn=yes,ac_cv_db_stat_accept_txn=no)])
+ if test "$ac_cv_db_stat_accept_txn" = "yes"; then
+ AC_DEFINE(HAVE_DB_STAT_ACCEPT_TXN,1,[Define to 1 if DB->stat() accepts TXNid])

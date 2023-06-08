@@ -1,5 +1,5 @@
---- a/modules/pari/desc2lisp.lisp
-+++ b/modules/pari/desc2lisp.lisp
+--- modules/pari/desc2lisp.lisp
++++ modules/pari/desc2lisp.lisp
 @@ -166,7 +166,15 @@
        (setq h (car h)))
      (if (and h (ext:starts-with-p h f) (setq end (search "):" h)))
