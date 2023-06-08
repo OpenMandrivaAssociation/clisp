@@ -61,12 +61,6 @@ Patch4:		%{name}-c99.patch
 Patch5:		%{name}-linux.patch
 # (fedora)
 Patch10:	%{name}-pari.patch
-# (mageia)
-#Patch11:	%{name}-setkey.patch
-
-# Work around a problem inlining a function on ppc64le
-# See https://bugzilla.redhat.com/show_bug.cgi?id=2049371
-Patch100:	%{name}-no-inline.patch
 
 BuildRequires:	gettext-devel
 BuildRequires:	imake
