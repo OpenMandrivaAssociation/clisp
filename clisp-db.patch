@@ -1,17 +1,19 @@
---- modules/berkeley-db/configure.orig	2021-06-28 14:32:42.000000000 -0600
-+++ modules/berkeley-db/configure	2021-07-16 15:35:19.789568797 -0600
-@@ -6376,7 +6376,7 @@ then :
- else $as_nop
- 
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.1~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.1~	2024-11-21 21:22:43.965542489 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure	2024-11-21 21:23:51.657415222 +0100
+@@ -6272,7 +6272,7 @@ then :
+ else case e in #(
+   e)
  CFLAGS_save="$CFLAGS"
 -CFLAGS="$CFLAGS -Werror"
 +CFLAGS="$CFLAGS -Wno-uninitialized -Werror"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  #include <db.h>
---- modules/berkeley-db/configure.in.orig	2021-06-28 14:32:42.000000000 -0600
-+++ modules/berkeley-db/configure.in	2021-07-16 15:35:19.786568792 -0600
-@@ -48,7 +48,7 @@ dnl <http://www.sleepycat.com/docs/ref/u
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.in.1~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.in
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.in.1~	2024-11-21 21:22:43.965542489 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/configure.in	2024-11-21 21:23:34.207185304 +0100
+@@ -49,7 +49,7 @@ dnl See db-5.3.28/docs/upgrading/upgrade
  AC_CACHE_CHECK([whether DB_ENV->set_errcall() accepts DBE],
  ac_cv_dbe_set_errcall_accept_dbe,[
  CFLAGS_save="$CFLAGS"
@@ -19,4 +21,16 @@
 +CFLAGS="$CFLAGS -Wno-uninitialized -Werror"
  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <db.h>
  void my_callback (const DB_ENV* dbe, const char *errpfx, const char *msg) {}],
- [[DB_ENV dbe; dbe.set_errcall(&dbe,&my_callback);]])],
+ [[DB_ENV *dbe; db_env_create(&dbe,0); dbe->set_errcall(dbe,&my_callback);]])],
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/bdb.c.omv~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/bdb.c
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/bdb.c.omv~	2024-11-21 23:45:18.973519093 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/modules/berkeley-db/bdb.c	2024-11-21 23:46:20.664511709 +0100
+@@ -264,7 +264,7 @@ static void add_message (struct messages
+ /* dbe is a const pointer, so we cannot change its slots explicitly
+    (e.g., by assigning to app_private),
+    so we have to pass an address to add_message() */
+-static void message_callback (const DB_ENV* dbe, const char *msg) {
++static void message_callback (const DB_ENV* dbe, const char *msg, const char *unused) {
+   add_message((struct messages**)&(dbe->app_private),msg);
+ }
+ #else

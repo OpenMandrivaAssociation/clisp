@@ -1,5 +1,6 @@
 # clisp can't run properly if LTO is used
 %define _disable_lto 1
+%define _disable_rebuild_configure 1
 
 # define missing macro for Emacs
 %{?!%_emacs_bytecompile:%global _emacs_bytecompile emacs -batch --no-init-file --no-site-file --eval '(progn (setq load-path (cons "." load-path)))' -f batch-byte-compile}
@@ -9,8 +10,8 @@
 # git snapshot
 %global snapshot 1
 %if 0%{?snapshot}
-	%global commit		79cbafdbc6337d6dcd8f2dbad69fb7ebf7a46012
-	%global commitdate	20230212
+	%global commit		faa3b6b4b47d3cc60725f60520080933b35ef115
+	%global commitdate	20241121
 	%global shortcommit	%(c=%{commit}; echo ${c:0:7})
 %endif
 
@@ -28,8 +29,8 @@
 
 Summary:	ANSI Common Lisp implementation
 Name:		clisp
-Version:	2.49.93
-Release:	2
+Version:	2.49.95
+Release:	%{?snapshot:0.%{commitdate}.}1
 Group:		Development/Other
 License:	GPLv2
 %if 0%{?snapshot}
@@ -52,19 +53,22 @@ Patch2:		%{name}-register-volatile.patch
 # Perhaps we are racing with something else that allocates a pty.  Disable
 # the test for now.
 Patch3:		%{name}-pts-access.patch
-Patch4:		%{name}-c99.patch
 # (upstream) https://sourceforge.net/tracker/?func=detail&aid=3529615&group_id=1355&atid=301355
 #Patch1:		%{name}-arm.patch
 # (upstream) https://sourceforge.net/tracker/?func=detail&aid=3572511&group_id=1355&atid=301355
 #Patch2:		%{name}-libsvm.patch
 # Linux-specific fixes.  Sent upstream 25 Jul 2012.
 Patch5:		%{name}-linux.patch
+Patch6:		clisp-autoconk.patch
 # (fedora)
 Patch10:	%{name}-pari.patch
 
 BuildRequires:	gettext-devel
 BuildRequires:	imake
 BuildRequires:	locales-en
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	slibtool
 %if %{with db}
 BuildRequires:	db-devel	
 %endif
@@ -333,7 +337,7 @@ Files necessary for linking CLISP.
 #---------------------------------------------------------------------------
 
 %prep
-%autosetup -p0 -n %{?snapshot:%{name}-%{commit}}
+%autosetup -p1 -n %{?snapshot:%{name}-%{commit}}
 cp -p %{SOURCE1} emacs
 
 # Change URLs not affected by the --hyperspec argument to configure
@@ -366,6 +370,12 @@ tar -C modules/clx -xzf modules/clx/clx-manual.tar.gz
 chmod a+rx modules/clx/clx-manual/html
 chmod a+r modules/clx/clx-manual/html/*
 
+# Fix autoconk mess
+cd src
+slibtoolize --force
+aclocal -I m4 -I glm4
+autoconf
+
 %build
 export LC_ALL=C.UTF-8
 #setup_compile_flags
@@ -382,7 +392,7 @@ export LC_ALL=C.UTF-8
 	--mandir=%{_mandir} \
 	--infodir=%{_infodir} \
 	--docdir=%{_docdir}/%{name}-%{version}+ \
-	--fsstnd=%{vendor}redhat \
+	--fsstnd=redhat \
 	--hyperspec=https://www.lispworks.com/documentation/HyperSpec/ \
 	--with-module=asdf \
 %if %{with db}
@@ -418,6 +428,7 @@ export LC_ALL=C.UTF-8
 %endif
 	--with-libreadline \
 	--with-ffcall \
+	--with-libffcall-prefix=%{_prefix} \
 	--config \
 	build \
 	CPPFLAGS="-I%{_includedir}/libsvm" \
@@ -449,9 +460,6 @@ cat %{name}low.lang >> %{name}.lang
 pushd %{buildroot}%{_datadir}/emacs/site-lisp
 %{_emacs_bytecompile} *.el
 popd
-
-# Put back the original config.rpath, and fix executable bits
-cp -p config.rpath.orig %{buildroot}/%{_libdir}/%{name}-%{version}+/build-aux/config.rpath
 
 # Fix paths in the Makefiles
 for mk in $(find %{buildroot}%{_libdir} -name Makefile); do

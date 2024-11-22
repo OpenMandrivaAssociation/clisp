@@ -1,0 +1,53 @@
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/configure.ac.omv~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/configure.ac
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/m4/ffcall.m4.omv~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/m4/ffcall.m4
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/m4/ffcall.m4.omv~	2024-11-21 22:00:40.448492070 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/m4/ffcall.m4	2024-11-21 22:02:16.709435237 +0100
+@@ -69,17 +69,9 @@ AC_DEFUN([CL_FFCALL],[
+         host_arg=" --host=$ac_cv_host"
+       fi
+       libffcall_url='CL_LIBFFCALL_DOWNLOAD_URL'
+-      libffcall_targz=`echo "$libffcall_url" | sed -e 's|^.*/||'`
+-      libffcall_dirname=`echo "$libffcall_targz" | sed -e 's|\.tar\.gz$||'`
+-      AC_MSG_ERROR([Despite --with-ffcall, LIBFFCALL was not found
+- Either call configure without --with-ffcall or do
+-  mkdir prerequisites; cd prerequisites; prefix=\$(pwd)/${ac_cv_host}
+-  wget ${libffcall_url}
+-  tar xfz ${libffcall_targz}
+-  cd ${libffcall_dirname}
+-  ./configure$host_arg --prefix=\${prefix} && make && make check && make install
+-  cd ../..
+-  ./configure --with-libffcall-prefix=\${prefix} ${ac_configure_args}])
++      libffcall_targz=$(echo "$libffcall_url" | sed -e 's|^.*/||')
++      libffcall_dirname=$(echo "$libffcall_targz" | sed -e 's|\.tar\.gz$||')
++      AC_MSG_ERROR([Despite --with-ffcall, LIBFFCALL was not found])
+     fi
+   fi
+ ])
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-link.m4.omv~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-link.m4
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-link.m4.omv~	2024-11-21 23:18:03.015156637 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-link.m4	2024-11-21 23:18:43.764301894 +0100
+@@ -198,8 +198,8 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
+     eval additional_libdir3=\"$exec_prefix/$acl_libdirstem3\"
+   ])
+   AC_ARG_WITH(PACK[-prefix],
+-[[  --with-]]PACK[[-prefix[=DIR]  search for ]]PACKLIBS[[ in DIR/include and DIR/lib
+-  --without-]]PACK[[-prefix     don't search for ]]PACKLIBS[[ in includedir and libdir]],
++[[[  --with-]]PACK[[-prefix[=DIR]  search for ]]PACKLIBS[[ in DIR/include and DIR/lib
++  --without-]]PACK[[-prefix     don't search for ]]PACKLIBS[[ in includedir and libdir]]],
+ [
+     if test "X$withval" = "Xno"; then
+       use_additional=no
+diff -up clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-prefix.m4.omv~ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-prefix.m4
+--- clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-prefix.m4.omv~	2024-11-21 23:18:50.064177782 +0100
++++ clisp-faa3b6b4b47d3cc60725f60520080933b35ef115/src/glm4/lib-prefix.m4	2024-11-21 23:19:06.043872237 +0100
+@@ -28,8 +28,8 @@ AC_DEFUN([AC_LIB_PREFIX],
+     eval additional_libdir=\"$libdir\"
+   ])
+   AC_ARG_WITH([lib-prefix],
+-[[  --with-lib-prefix[=DIR] search for libraries in DIR/include and DIR/lib
+-  --without-lib-prefix    don't search for libraries in includedir and libdir]],
++[  --with-lib-prefix[=DIR] search for libraries in DIR/include and DIR/lib
++  --without-lib-prefix    don't search for libraries in includedir and libdir],
+ [
+     if test "X$withval" = "Xno"; then
+       use_additional=no
