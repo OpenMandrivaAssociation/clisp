@@ -10,22 +10,22 @@
 # git snapshot
 %global snapshot 1
 %if 0%{?snapshot}
-	%global commit		faa3b6b4b47d3cc60725f60520080933b35ef115
-	%global commitdate	20241121
+	%global commit		c3ec11bab87cfdbeba01523ed88ac2a16b22304d
+	%global commitdate	20241228
 	%global shortcommit	%(c=%{commit}; echo ${c:0:7})
 %endif
 
-%bcond_without	db
-%bcond_without	dbus
-%bcond_without	fgci
-%bcond_without	gdbm
+%bcond	db	1
+%bcond	dbus	1
+%bcond	fgci	1
+%bcond	gdbm	1
 # gtk3 is not supported, for now
-%bcond_with		gtk2
-%bcond_without	libsvm
-%bcond_without	libx
-%bcond_without	pari
-%bcond_without	postgresql
-%bcond_with	tests
+%bcond	gtk2		0
+%bcond	libsvm		1
+%bcond	libx		1
+%bcond	pari		1
+%bcond	postgresql	1
+%bcond	tests		0
 
 Summary:	ANSI Common Lisp implementation
 Name:		clisp
