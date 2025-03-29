@@ -30,7 +30,7 @@
 Summary:	ANSI Common Lisp implementation
 Name:		clisp
 Version:	2.49.95
-Release:	%{?snapshot:0.%{commitdate}.}1
+Release:	%{?snapshot:0.%{commitdate}.}2
 Group:		Development/Other
 License:	GPLv2
 %if 0%{?snapshot}
