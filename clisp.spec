@@ -63,6 +63,7 @@ Patch6:		clisp-autoconk.patch
 # (fedora)
 Patch10:	%{name}-pari.patch
 
+BuildRequires:	libtool-base
 BuildRequires:	gettext-devel
 BuildRequires:	imake
 BuildRequires:	locales-en
